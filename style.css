@@ -1,7 +1,7 @@
 :root {
     --bg-sky: #d6eeff; 
     --title-blue: #75c2e9; 
-    --container-white: rgba(234, 247, 255, 0.8); 
+    --container-white: rgba(234, 247, 255, 0.95); 
     --btn-blue: #38bdf8;
     --btn-hover: #0ea5e9;
     --phase-exhale: #ffe4e6; 
@@ -9,10 +9,15 @@
     --phase-inhale: #caf0f8;  
 }
 
-/* 🚀 html에 가로 스크롤 차단 추가 */
+/* 🚀 핵심 1: 화면 전체의 스크롤과 바운스 효과를 원천 차단 */
 html, body {
-    overflow-x: hidden; /* 가로로 넘어가는 요소를 모두 숨겨서 드래그 방지 */
+    height: 100%; 
+    height: 100dvh; /* 아이폰 사파리의 실제 보여지는 화면 높이에 완벽히 맞춤 */
     width: 100%;
+    overflow: hidden !important; /* 위아래/좌우 스크롤 절대 불가 */
+    overscroll-behavior: none; /* 아이폰 끝부분 고무줄처럼 튕기는 현상 차단 */
+    margin: 0;
+    padding: 0;
 }
 
 body {
@@ -20,30 +25,22 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    margin: 0;
-    
     background-color: var(--bg-sky);
     
     background-image: 
         url('cloud.png'),
         url('cloud.png'),
         url('cloud.png'),
-        url('cloud.png'),
-        url('cloud.png'),
         url('cloud.png'); 
-
     background-repeat: no-repeat;
-
+    
     background-size: 380px, 320px, 450px, 350px; 
-
     background-position: 
-        -80px -20px,            /* 왼쪽 위 */
-        calc(100% + 80px) 5%,   /* 오른쪽 위 */
-        calc(100% + 80px) 30%,   /* 오른쪽 위 */
-        -100px 95%,             /* 왼쪽 아래 */
-        -100px 60%,             /* 왼쪽 아래 */
-        calc(100% + 60px) 105%; /* 오른쪽 아래 */
+        -80px -20px,            
+        calc(100% + 80px) 5%,   
+        -100px 95%,             
+        calc(100% + 60px) 105%; 
+        
     image-rendering: pixelated; 
     background-attachment: fixed;
     
@@ -54,52 +51,62 @@ body {
 
 .container {
     background: var(--container-white);
-    padding: 2.5rem 1.5rem; 
+    /* 🚀 핵심 2: 아이폰 화면에 넘치지 않게 내부 여백(padding) 살짝 축소 */
+    padding: 1.5rem 1.2rem; 
     border-radius: 24px; 
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15); 
     text-align: center;
     
-    /* 🚀 90% 대신 여백을 정확히 빼주는 방식으로 변경하여 기기 핏감을 높임 */
-    width: calc(100% - 40px); 
+    width: 90%; 
     max-width: 420px; 
+    max-height: 95dvh; /* 컨테이너가 화면 높이의 95%를 넘지 못하게 잠금 */
     
     box-sizing: border-box; 
     overflow: hidden; 
     position: relative; 
+    
+    /* 요소들을 세로로 꽉 차게 분배 */
+    display: flex;
+    flex-direction: column;
 }
 
-h1 {
-    color: var(--title-blue); 
-    margin-top: 0;
-    margin-bottom: 1.5rem;
-    font-size: 1.7rem;
-    font-weight: 700;
-    background-color: #ffffff; 
-    padding: 1.2rem; 
-    border-radius: 16px; 
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08); 
-}
-
+/* 박스 내부의 화면들(.screen)도 꽉 차게 설정 */
 .screen {
     display: none; 
     opacity: 0;
     transform: translateY(15px); 
     transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+    flex-direction: column;
+    height: 100%;
 }
 
 .screen.active {
-    display: block; 
+    display: flex; /* block 대신 flex로 변경하여 내부 높이 조절 */
     opacity: 1;
     transform: translateY(0); 
 }
 
-/* --- 🚀 프리셋 헤더 (타이틀과 박스 사이) --- */
+h1 {
+    color: var(--title-blue); 
+    margin-top: 0;
+    /* 🚀 핵심 3: 제목과 버튼 등 요소 사이의 틈새 여백 다이어트 */
+    margin-bottom: 1rem; 
+    font-size: 1.6rem;
+    font-weight: 700;
+    background-color: #ffffff; 
+    padding: 1rem; 
+    border-radius: 16px; 
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08); 
+    flex-shrink: 0;
+}
+
 .preset-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 0.8rem;
+    margin-bottom: 0.6rem; /* 여백 축소 */
     padding: 0 5px;
+    flex-shrink: 0;
 }
 
 .section-title {
@@ -125,10 +132,9 @@ h1 {
     transform: translateY(2px);
     background-color: #e0f2fe;
 }
-/* ------------------------------------- */
 
 .settings-group {
-    margin-bottom: 1.2rem; 
+    margin-bottom: 0.8rem; /* 그룹 사이 여백 축소 */
     background: #ffffff; 
     border-radius: 16px; 
     display: flex;
@@ -136,6 +142,7 @@ h1 {
     padding: 0; 
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08); 
     overflow: hidden; 
+    flex-shrink: 0;
 }
 
 .input-group {
@@ -152,7 +159,8 @@ h1 {
     justify-content: space-between; 
     align-items: center;
     width: 100%;
-    padding: 16px 20px; 
+    /* 🚀 셀의 위아래 높이를 16px -> 12px로 줄여 공간 확보 */
+    padding: 12px 15px; 
     font-size: 1.05rem;
     font-weight: 500;
     color: #333;
@@ -188,13 +196,13 @@ h1 {
 }
 
 .input-group input {
-    width: 65px; 
-    height: 40px; 
+    width: 60px; /* 약간 축소 */
+    height: 36px; /* 약간 축소 */
     padding: 0;
     text-align: center; 
     border: none; 
     border-radius: 8px; 
-    font-size: 1.25rem; 
+    font-size: 1.2rem; 
     font-weight: 600;
     color: var(--title-blue);
     background-color: #f1f8ff; 
@@ -218,7 +226,7 @@ input[type="number"] {
 
 .main-btn {
     width: 100%;
-    padding: 18px 0; 
+    padding: 15px 0; /* 버튼 높이 축소 (18px -> 15px) */
     font-size: 1.25rem;
     font-weight: 600;
     cursor: pointer;
@@ -228,6 +236,8 @@ input[type="number"] {
     color: rgb(255, 255, 255);
     transition: all 0.2s ease;
     box-shadow: 0 6px 15px rgba(54, 92, 109, 0.25); 
+    margin-top: auto; /* 공간이 남으면 버튼을 맨 아래로 밀어줌 */
+    flex-shrink: 0;
 }
 
 .main-btn:active {
@@ -235,8 +245,9 @@ input[type="number"] {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
+/* --- 타이머 화면 --- */
 .timer-display {
-    margin: 1.5rem auto;
+    margin: auto; /* 타이머를 화면 정중앙에 배치 */
     padding: 1rem;
     border-radius: 50%;
     background-color: #f8fafc; 
@@ -249,6 +260,7 @@ input[type="number"] {
     box-shadow: inset 0 3px 8px rgba(0,0,0,0.08), 0 6px 15px rgba(0,0,0,0.05); 
     transition: background-color 0.8s ease-out; 
     box-sizing: border-box;
+    flex-shrink: 0;
 }
 
 #phase-text {
@@ -274,10 +286,11 @@ input[type="number"] {
 }
 
 .controls {
-    margin-top: 1rem;
+    margin-top: auto; /* 컨트롤 버튼들을 맨 아래로 밀어줌 */
     display: flex;
     justify-content: center;
     gap: 10px; 
+    flex-shrink: 0;
 }
 
 .controls button {
@@ -310,9 +323,13 @@ input[type="number"] {
 .hold-phase { background-color: var(--phase-hold) !important; }
 .inhale-phase { background-color: var(--phase-inhale) !important; box-shadow: 0 0 25px rgba(202, 240, 248, 0.8); }
 
-@media (max-width: 350px) {
-    .container { padding: 1.5rem 1rem; }
-    .timer-display { width: 190px; height: 190px; }
+@media (max-width: 350px), (max-height: 650px) {
+    /* 폰 크기가 아주 작은 경우(SE 등) 대응 */
+    .container { padding: 1rem; }
+    h1 { font-size: 1.4rem; padding: 0.8rem; margin-bottom: 0.5rem; }
+    .input-group label { padding: 8px 12px; }
+    .main-btn { padding: 12px 0; }
+    .timer-display { width: 180px; height: 180px; }
     #time-left { font-size: 3.5rem; }
 }
 

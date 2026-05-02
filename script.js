@@ -38,6 +38,15 @@ const presetData = {
             hold: 7,
             exhale: 8
         }
+    },
+    '1025': {
+        name: '10-2-5 호흡법',
+        order: ['exhale', 'hold', 'inhale'], 
+        times: {
+            exhale: 10,
+            hold: 2,
+            inhale: 5
+        }
     }
 };
 

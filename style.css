@@ -1,0 +1,94 @@
+body {
+    font-family: sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    background-color: #f0f2f5;
+}
+
+.container {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    text-align: center;
+    max-width: 400px;
+    width: 100%;
+}
+
+.settings {
+    margin-bottom: 20px;
+}
+
+.input-group {
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+}
+
+.input-group input {
+    width: 60px;
+    padding: 5px;
+    text-align: right;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* 타이머 원형 디자인 */
+.timer-display {
+    margin: 20px auto;
+    padding: 30px;
+    border-radius: 50%;
+    background-color: #e9ecef;
+    width: 200px;
+    height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    transition: background-color 0.5s ease; /* 색상 변경 애니메이션 */
+}
+
+#phase-text {
+    margin: 0;
+    font-size: 1.8rem;
+    color: #333;
+}
+
+#time-left {
+    font-size: 3.5rem;
+    font-weight: bold;
+    margin: 10px 0;
+    color: #111;
+}
+
+.progress-info {
+    font-size: 0.9rem;
+    color: #666;
+    line-height: 1.4;
+}
+
+.controls button {
+    padding: 10px 25px;
+    font-size: 1.1rem;
+    margin: 0 5px;
+    cursor: pointer;
+    border: none;
+    border-radius: 8px;
+    background-color: #007bff;
+    color: white;
+    transition: background-color 0.2s;
+}
+
+.controls button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+/* 상태별 타이머 배경색 */
+.exhale-phase { background-color: #ffd6d6; } /* 날숨: 옅은 빨강 */
+.hold-phase { background-color: #e9ecef; }   /* 정지: 회색 */
+.inhale-phase { background-color: #d6e8ff; } /* 들숨: 옅은 파랑 */

@@ -10,6 +10,9 @@
 </head>
 <body>
     <div class="container">
+        <!-- 🚀 오른쪽 위 프리셋 버튼 추가 -->
+        <button id="preset-btn" class="preset-btn">프리셋</button>
+
         <h1>숨 타이머 ☁️</h1>
 
         <!-- 첫 번째 화면: 설정 화면 -->
@@ -90,6 +93,19 @@
             </div>
         </div>
     </div>
+
+    <!-- 🚀 프리셋 선택 모달창 -->
+    <div id="preset-modal" class="modal">
+        <div class="modal-content">
+            <h3>프리셋 목록</h3>
+            <div class="preset-list">
+                <!-- 향후 프리셋 추가 시 여기에 버튼을 늘리면 됩니다 -->
+                <button class="preset-item" data-preset="478">4-7-8 호흡법</button>
+            </div>
+            <button id="close-modal-btn" class="close-modal-btn">닫기</button>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>

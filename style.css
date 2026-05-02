@@ -35,6 +35,7 @@ body {
     max-width: 420px; 
     box-sizing: border-box; 
     overflow: hidden; 
+    position: relative; /* 🚀 프리셋 버튼을 우측 상단에 고정하기 위한 기준점 */
 }
 
 h1 {
@@ -62,9 +63,9 @@ h1 {
     transform: translateY(0); 
 }
 
-/* --- 📱 분리된 설정 박스 스타일 (.settings -> .settings-group 변경) --- */
+/* --- 📱 분리된 설정 박스 스타일 --- */
 .settings-group {
-    margin-bottom: 1.2rem; /* 박스 사이 간격 */
+    margin-bottom: 1.2rem; 
     background: #ffffff; 
     border-radius: 16px; 
     display: flex;
@@ -76,7 +77,7 @@ h1 {
 
 .input-group {
     border-bottom: 2px solid rgba(0, 0, 0, 0.03); 
-    background-color: white; /* 드래그 시 배경색 유지 */
+    background-color: white; 
 }
 
 .input-group:last-child {
@@ -96,32 +97,28 @@ h1 {
     cursor: pointer; 
 }
 
-/* 왼쪽 손잡이와 텍스트 묶음 */
 .label-left {
     display: flex;
     align-items: center;
 }
 
-/* 드래그 손잡이 (아이폰 설정 느낌) */
 .drag-handle {
     color: #c7c7cc;
     font-size: 1.5rem;
     margin-right: 12px;
     cursor: grab;
-    user-select: none; /* 터치 시 글자 선택 방지 */
+    user-select: none; 
 }
 
 .drag-handle:active {
     cursor: grabbing;
 }
 
-/* 드래그 없는 박스 줄맞춤용 */
 .icon-spacer {
-    width: 24px; /* 손잡이 너비만큼 공간 확보 */
+    width: 24px; 
     margin-right: 12px;
 }
 
-/* 드래그 중인 아이템 효과 */
 .sortable-ghost {
     opacity: 0.4;
     background-color: #f1f8ff;
@@ -254,4 +251,97 @@ input[type="number"] {
     .container { padding: 1.5rem 1rem; }
     .timer-display { width: 190px; height: 190px; }
     #time-left { font-size: 3.5rem; }
+}
+
+/* --- 🚀 추가된 프리셋 관련 스타일 --- */
+.preset-btn {
+    position: absolute;
+    top: 1.2rem;
+    right: 1.2rem;
+    background-color: #f1f8ff;
+    color: var(--title-blue);
+    border: 1px solid #d6eeff;
+    padding: 8px 14px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
+    transition: all 0.2s ease;
+    z-index: 10;
+}
+
+.preset-btn:active {
+    transform: translateY(2px);
+    background-color: #e0f2fe;
+}
+
+.modal {
+    display: none; 
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.modal.active {
+    display: flex;
+    opacity: 1;
+}
+
+.modal-content {
+    background-color: #ffffff;
+    width: 80%;
+    max-width: 320px;
+    border-radius: 20px;
+    padding: 1.5rem;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    transform: translateY(20px);
+    transition: transform 0.3s ease;
+}
+
+.modal.active .modal-content {
+    transform: translateY(0);
+}
+
+.modal-content h3 {
+    margin-top: 0;
+    color: #333;
+    font-size: 1.3rem;
+    margin-bottom: 1.2rem;
+}
+
+.preset-item {
+    width: 100%;
+    padding: 15px;
+    margin-bottom: 10px;
+    background-color: #f1f8ff;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--title-blue);
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.preset-item:active {
+    background-color: #e0f2fe;
+}
+
+.close-modal-btn {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    background-color: transparent;
+    border: none;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #888;
+    cursor: pointer;
 }

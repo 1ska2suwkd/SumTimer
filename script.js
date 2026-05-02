@@ -28,6 +28,61 @@ new Sortable(phaseList, {
     ghostClass: 'sortable-ghost'
 });
 
+// --- 🚀 프리셋 데이터 및 로직 ---
+const presetData = {
+    '478': {
+        name: '4-7-8 호흡법',
+        order: ['inhale', 'hold', 'exhale'], // 들숨(4) -> 정지(7) -> 날숨(8)
+        times: {
+            inhale: 4,
+            hold: 7,
+            exhale: 8
+        }
+    }
+};
+
+const presetBtn = document.getElementById('preset-btn');
+const presetModal = document.getElementById('preset-modal');
+const closeModalBtn = document.getElementById('close-modal-btn');
+const presetItems = document.querySelectorAll('.preset-item');
+
+// 모달창 열기/닫기
+presetBtn.addEventListener('click', () => presetModal.classList.add('active'));
+closeModalBtn.addEventListener('click', () => presetModal.classList.remove('active'));
+
+// 모달창 바깥 검은 배경 클릭 시 닫히게 처리 (사용성)
+presetModal.addEventListener('click', (e) => {
+    if (e.target === presetModal) presetModal.classList.remove('active');
+});
+
+// 프리셋 적용 로직
+presetItems.forEach(btn => {
+    btn.addEventListener('click', () => {
+        const presetId = btn.dataset.preset;
+        const preset = presetData[presetId];
+        
+        // 확인창 띄우기
+        if (confirm(`'${preset.name}' 프리셋을 적용하시겠습니까?`)) {
+            // 1. 시간 값 변경
+            document.getElementById('inhale-time').value = preset.times.inhale;
+            document.getElementById('hold-time').value = preset.times.hold;
+            document.getElementById('exhale-time').value = preset.times.exhale;
+
+            // 2. 화면의 박스 순서 재배치 (DOM 조작)
+            preset.order.forEach(phaseKey => {
+                const targetItem = phaseList.querySelector(`[data-phase="${phaseKey}"]`);
+                if (targetItem) {
+                    phaseList.appendChild(targetItem); // 해당 항목을 맨 뒤로 보내며 순서 정렬
+                }
+            });
+
+            // 적용 후 모달 닫기
+            presetModal.classList.remove('active');
+        }
+    });
+});
+// ---------------------------------
+
 // --- 상태 관리 변수 ---
 let timer;
 let countdownTimerInterval;

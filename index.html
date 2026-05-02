@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>호흡 가이드 타이머</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>호흡 타이머</h1>
+
+        <!-- 설정 영역 -->
+        <div class="settings">
+            <div class="input-group">
+                <label>날숨 (초): <input type="number" id="exhale-time" value="10" min="1"></label>
+            </div>
+            <div class="input-group">
+                <label>정지 (초): <input type="number" id="hold-time" value="2" min="0"></label>
+            </div>
+            <div class="input-group">
+                <label>들숨 (초): <input type="number" id="inhale-time" value="5" min="1"></label>
+            </div>
+            <div class="input-group">
+                <label>1세트당 횟수: <input type="number" id="reps-per-set" value="5" min="1"></label>
+            </div>
+            <div class="input-group">
+                <label>총 세트: <input type="number" id="total-sets" value="3" min="1"></label>
+            </div>
+        </div>
+
+        <!-- 타이머 표시 영역 -->
+        <div class="timer-display">
+            <h2 id="phase-text">준비</h2>
+            <div id="time-left">0</div>
+            <div class="progress-info">
+                <span>회차: <span id="current-rep">0</span> / <span id="total-reps-display">5</span></span>
+                <br>
+                <span>세트: <span id="current-set">0</span> / <span id="total-sets-display">3</span></span>
+            </div>
+        </div>
+
+        <!-- 컨트롤 버튼 -->
+        <div class="controls">
+            <button id="start-btn">시작</button>
+            <button id="stop-btn" disabled>정지</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

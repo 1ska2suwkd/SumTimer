@@ -1,7 +1,4 @@
 // 입력 값 요소
-const exhaleInput = document.getElementById('exhale-time');
-const holdInput = document.getElementById('hold-time');
-const inhaleInput = document.getElementById('inhale-time');
 const repsInput = document.getElementById('reps-per-set');
 const setsInput = document.getElementById('total-sets');
 
@@ -23,14 +20,27 @@ const goToTimerBtn = document.getElementById('go-to-timer-btn');
 const stopBtn = document.getElementById('stop-btn');
 const backBtn = document.getElementById('back-btn');
 
+// --- 드래그 앤 드롭 초기화 (SortableJS) ---
+const phaseList = document.getElementById('phase-list');
+new Sortable(phaseList, {
+    handle: '.drag-handle', // ≡ 손잡이를 잡았을 때만 드래그
+    animation: 150, // 부드럽게 위치가 바뀌는 애니메이션 시간
+    ghostClass: 'sortable-ghost'
+});
+// ----------------------------------------
+
 // 변수 설정
 let timer;
-let countdownTimerInterval; // 3,2,1 카운트다운용 변수
+let countdownTimerInterval;
 let timeLeft = 0;
-let currentPhase = ''; // 'exhale', 'hold', 'inhale'
+
 let currentRep = 1;
 let currentSet = 1;
 let isRunning = false;
+
+// 순서를 담을 배열
+let currentOrder = []; 
+let currentPhaseIndex = 0; 
 
 // 🔊 알림음 생성 함수
 function playBeep(frequency, type = 'sine', duration = 0.3) {
@@ -61,47 +71,52 @@ function updateUI() {
 }
 
 // 다음 호흡 단계로 전환
-function switchPhase(newPhase) {
-    currentPhase = newPhase;
-    timerCircle.className = 'timer-display ' + newPhase + '-phase';
+function switchPhase(phaseName) {
+    timerCircle.className = 'timer-display ' + phaseName + '-phase';
 
-    if (newPhase === 'exhale') {
+    if (phaseName === 'exhale') {
         phaseText.textContent = '내쉬기 (입)';
-        timeLeft = parseInt(exhaleInput.value);
-        playBeep(440); // 기본 음
-    } else if (newPhase === 'hold') {
+        timeLeft = parseInt(document.getElementById('exhale-time').value);
+        playBeep(440); 
+    } else if (phaseName === 'hold') {
         phaseText.textContent = '숨 참기';
-        timeLeft = parseInt(holdInput.value);
-        playBeep(330); // 낮은 음
-    } else if (newPhase === 'inhale') {
+        timeLeft = parseInt(document.getElementById('hold-time').value);
+        playBeep(330); 
+    } else if (phaseName === 'inhale') {
         phaseText.textContent = '들이마시기 (코)';
-        timeLeft = parseInt(inhaleInput.value);
-        playBeep(523.25); // 높은 음
+        timeLeft = parseInt(document.getElementById('inhale-time').value);
+        playBeep(523.25); 
     }
     updateUI();
 }
 
-// 호흡 사이클 및 세트 계산 로직
+// 사용자가 설정한 순서대로 진행하는 로직
 function nextStep() {
-    if (currentPhase === 'exhale') {
-        switchPhase('hold');
-    } else if (currentPhase === 'hold') {
-        switchPhase('inhale');
-    } else if (currentPhase === 'inhale') {
+    currentPhaseIndex++; // 다음 순서로 이동
+    
+    // 1. 현재 순서 배열 안에 다음 호흡이 남아있는지 확인
+    if (currentPhaseIndex < currentOrder.length) {
+        switchPhase(currentOrder[currentPhaseIndex]);
+    } else {
+        // 배열을 다 돌았다면 = 호흡 1회 완료
         if (currentRep < parseInt(repsInput.value)) {
             currentRep++;
-            switchPhase('exhale');
+            currentPhaseIndex = 0; // 다시 첫 번째 호흡으로
+            switchPhase(currentOrder[currentPhaseIndex]);
         } else {
+            // 1세트 완료
             if (currentSet < parseInt(setsInput.value)) {
                 currentSet++;
                 currentRep = 1;
-                playBeep(880, 'triangle', 0.5); // 세트 완료 특수음 길게
-                switchPhase('exhale'); 
+                currentPhaseIndex = 0;
+                playBeep(880, 'triangle', 0.5); 
+                switchPhase(currentOrder[currentPhaseIndex]); 
             } else {
+                // 모든 세트 완료
                 stopTimer();
                 phaseText.textContent = '완료!';
                 timerCircle.className = 'timer-display'; 
-                playBeep(1046.5, 'square', 0.6); // 종료 알림
+                playBeep(1046.5, 'square', 0.6); 
             }
         }
     }
@@ -116,7 +131,6 @@ function tick() {
     }
 }
 
-// --- 화면 전환 로직 ---
 function switchScreen(hideScreen, showScreen) {
     hideScreen.classList.remove('active');
     setTimeout(() => {
@@ -128,55 +142,60 @@ function switchScreen(hideScreen, showScreen) {
     }, 400);
 }
 
-// --- 3, 2, 1 카운트다운 시작 함수 ---
+// --- 사용자가 드래그한 현재 순서를 읽어오는 함수 ---
+function fetchCurrentOrder() {
+    const items = document.querySelectorAll('#phase-list .draggable-item');
+    currentOrder = Array.from(items).map(item => item.dataset.phase);
+}
+
 function startCountdown() {
     if (isRunning) return;
-    isRunning = true; // 중복 실행 방지
+    isRunning = true; 
+    
+    // 시작하기 직전에 현재 HTML에 배치된 순서를 저장합니다.
+    fetchCurrentOrder();
     
     let count = 3;
     
-    // 준비 화면 세팅
     phaseText.textContent = '준비';
     timeLeftDisplay.textContent = count;
     currentRepDisplay.textContent = '1';
     currentSetDisplay.textContent = '1';
     totalRepsDisplay.textContent = repsInput.value;
     totalSetsDisplay.textContent = setsInput.value;
-    timerCircle.className = 'timer-display'; // 색상 없는 기본 상태
+    timerCircle.className = 'timer-display'; 
     
-    // 첫 3초 알림음 (조금 짧고 경쾌한 소리)
     playBeep(600, 'sine', 0.15);
 
     countdownTimerInterval = setInterval(() => {
         count--;
         if (count > 0) {
             timeLeftDisplay.textContent = count;
-            playBeep(600, 'sine', 0.15); // 2초, 1초 알림음
+            playBeep(600, 'sine', 0.15); 
         } else {
-            // 카운트다운 끝나면 본 타이머 시작
             clearInterval(countdownTimerInterval);
-            isRunning = false; // startTimer에서 다시 true로 만들기 위해 초기화
+            isRunning = false; 
             startTimer(); 
         }
     }, 1000);
 }
 
-// --- 본 타이머 시작 함수 ---
 function startTimer() {
     if (isRunning) return;
     currentRep = 1;
     currentSet = 1;
+    currentPhaseIndex = 0; // 시작 시 배열의 첫 번째 인덱스부터
     isRunning = true;
     
     updateUI();
-    switchPhase('exhale'); 
+    // 사용자가 정한 첫 번째 순서의 호흡을 실행합니다.
+    switchPhase(currentOrder[currentPhaseIndex]); 
     timer = setInterval(tick, 1000);
 }
 
-// --- 정지 및 초기화 함수 ---
 function stopTimer() {
     clearInterval(timer);
-    clearInterval(countdownTimerInterval); // 카운트다운 도중 정지할 경우 대비
+    clearInterval(countdownTimerInterval); 
     isRunning = false;
     
     phaseText.textContent = '대기';
@@ -184,10 +203,8 @@ function stopTimer() {
     timerCircle.className = 'timer-display';
 }
 
-// --- 버튼 이벤트 리스너 ---
 goToTimerBtn.addEventListener('click', () => {
     switchScreen(setupScreen, timerScreen);
-    // 화면 전환 후 0.5초 뒤에 3,2,1 카운트다운 시작
     setTimeout(() => {
         startCountdown();
     }, 500);

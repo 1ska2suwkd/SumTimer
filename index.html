@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>호흡 가이드 타이머</title>
     <link rel="stylesheet" href="style.css">
+    <!-- 모바일 드래그 앤 드롭을 위한 가벼운 라이브러리 추가 -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -12,27 +14,65 @@
 
         <!-- 첫 번째 화면: 설정 화면 -->
         <div id="setup-screen" class="screen active">
-            <div class="settings">
-                <div class="input-group">
-                    <label>내쉬기 (초) <input type="number" id="exhale-time" value="10" min="1"></label>
+            
+            <!-- 첫 번째 박스: 호흡 순서 및 시간 설정 -->
+            <div class="settings-group" id="phase-list">
+                <!-- data-phase 속성으로 자바스크립트가 순서를 읽어갑니다 -->
+                <div class="input-group draggable-item" data-phase="exhale">
+                    <label>
+                        <div class="label-left">
+                            <span class="drag-handle">≡</span>
+                            <span>내쉬기 (입)</span>
+                        </div>
+                        <input type="number" id="exhale-time" value="10" min="1">
+                    </label>
                 </div>
-                <div class="input-group">
-                    <label>숨 참기 (초) <input type="number" id="hold-time" value="2" min="0"></label>
+                <div class="input-group draggable-item" data-phase="hold">
+                    <label>
+                        <div class="label-left">
+                            <span class="drag-handle">≡</span>
+                            <span>숨 참기</span>
+                        </div>
+                        <input type="number" id="hold-time" value="2" min="0">
+                    </label>
                 </div>
-                <div class="input-group">
-                    <label>들이마시기 (초) <input type="number" id="inhale-time" value="5" min="1"></label>
-                </div>
-                <div class="input-group">
-                    <label>1세트당 횟수 <input type="number" id="reps-per-set" value="5" min="1"></label>
-                </div>
-                <div class="input-group">
-                    <label>총 세트 <input type="number" id="total-sets" value="3" min="1"></label>
+                <div class="input-group draggable-item" data-phase="inhale">
+                    <label>
+                        <div class="label-left">
+                            <span class="drag-handle">≡</span>
+                            <span>들이마시기 (코)</span>
+                        </div>
+                        <input type="number" id="inhale-time" value="5" min="1">
+                    </label>
                 </div>
             </div>
+
+            <!-- 두 번째 박스: 세트 및 반복 설정 -->
+            <div class="settings-group">
+                <div class="input-group">
+                    <label>
+                        <div class="label-left">
+                            <span class="icon-spacer"></span> <!-- 줄맞춤용 빈 공간 -->
+                            <span>1세트당 횟수</span>
+                        </div>
+                        <input type="number" id="reps-per-set" value="5" min="1">
+                    </label>
+                </div>
+                <div class="input-group">
+                    <label>
+                        <div class="label-left">
+                            <span class="icon-spacer"></span>
+                            <span>총 세트</span>
+                        </div>
+                        <input type="number" id="total-sets" value="3" min="1">
+                    </label>
+                </div>
+            </div>
+
             <button id="go-to-timer-btn" class="main-btn">호흡 시작하기</button>
         </div>
 
-        <!-- 두 번째 화면: 타이머 화면 -->
+        <!-- 두 번째 화면: 타이머 화면 (기존과 동일) -->
         <div id="timer-screen" class="screen">
             <div class="timer-display">
                 <h2 id="phase-text">준비</h2>
@@ -44,7 +84,6 @@
                 </div>
             </div>
 
-            <!-- 컨트롤 버튼 -->
             <div class="controls">
                 <button id="stop-btn">정지</button>
                 <button id="back-btn">설정으로</button>

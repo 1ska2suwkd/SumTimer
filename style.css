@@ -1,12 +1,9 @@
 :root {
-    /* 마음이 편해지는 파스텔 색상 정의 */
     --bg-sky: #d6eeff; 
     --title-blue: #0284c7; 
-    --container-white: rgba(255, 255, 255, 0.95); 
+    --container-white: rgba(248, 248, 248, 0.95); 
     --btn-blue: #38bdf8;
     --btn-hover: #0ea5e9;
-    
-    /* 호흡 상태별 파스텔 색상 */
     --phase-exhale: #ffe4e6; 
     --phase-hold: #f1f5f9;   
     --phase-inhale: #caf0f8;  
@@ -31,8 +28,7 @@ body {
 .container {
     background: var(--container-white);
     padding: 2.5rem 1.5rem; 
-    border-radius: 24px; /* 바깥 컨테이너 모서리 조금 더 둥글게 */
-    /* 배경 컨테이너 그림자 대폭 강화 */
+    border-radius: 24px; 
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15); 
     text-align: center;
     width: 90%; 
@@ -41,22 +37,18 @@ body {
     overflow: hidden; 
 }
 
-/* --- 타이틀 박스 디자인 추가 --- */
 h1 {
     color: var(--title-blue); 
     margin-top: 0;
     margin-bottom: 1.5rem;
     font-size: 1.7rem;
     font-weight: 700;
-    
-    background-color: #ffffff; /* 하얀색 배경 */
-    padding: 1.2rem; /* 내부 여백 */
-    border-radius: 16px; /* 설정 앱처럼 둥근 모서리 */
-    /* 타이틀 박스 그림자 강화 (배경과 분리) */
+    background-color: #ffffff; 
+    padding: 1.2rem; 
+    border-radius: 16px; 
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08); 
 }
 
-/* --- 화면 전환 애니메이션 --- */
 .screen {
     display: none; 
     opacity: 0;
@@ -70,24 +62,23 @@ h1 {
     transform: translateY(0); 
 }
 
-/* --- 📱 아이폰 설정 앱 스타일 --- */
-.settings {
-    margin-bottom: 1.5rem;
+/* --- 📱 분리된 설정 박스 스타일 (.settings -> .settings-group 변경) --- */
+.settings-group {
+    margin-bottom: 1.2rem; /* 박스 사이 간격 */
     background: #ffffff; 
     border-radius: 16px; 
     display: flex;
     flex-direction: column;
     padding: 0; 
-    /* 설정 영역 박스 그림자 대폭 강화 (배경과 분리) */
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08); 
     overflow: hidden; 
 }
 
 .input-group {
-    border-bottom: 2px solid rgba(0, 0, 0, 0.03); /* 구분선 굵기를 살짝 줄여 더 세련되게 */
+    border-bottom: 2px solid rgba(0, 0, 0, 0.03); 
+    background-color: white; /* 드래그 시 배경색 유지 */
 }
 
-/* 마지막 셀은 밑줄이 없도록 처리 */
 .input-group:last-child {
     border-bottom: none;
 }
@@ -103,6 +94,37 @@ h1 {
     color: #333;
     box-sizing: border-box;
     cursor: pointer; 
+}
+
+/* 왼쪽 손잡이와 텍스트 묶음 */
+.label-left {
+    display: flex;
+    align-items: center;
+}
+
+/* 드래그 손잡이 (아이폰 설정 느낌) */
+.drag-handle {
+    color: #c7c7cc;
+    font-size: 1.5rem;
+    margin-right: 12px;
+    cursor: grab;
+    user-select: none; /* 터치 시 글자 선택 방지 */
+}
+
+.drag-handle:active {
+    cursor: grabbing;
+}
+
+/* 드래그 없는 박스 줄맞춤용 */
+.icon-spacer {
+    width: 24px; /* 손잡이 너비만큼 공간 확보 */
+    margin-right: 12px;
+}
+
+/* 드래그 중인 아이템 효과 */
+.sortable-ghost {
+    opacity: 0.4;
+    background-color: #f1f8ff;
 }
 
 .input-group input {
@@ -125,7 +147,6 @@ h1 {
     transform: scale(1.05); 
 }
 
-/* 숫자 입력칸의 기본 화살표 숨기기 */
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {
     -webkit-appearance: none;
@@ -134,9 +155,7 @@ input[type="number"]::-webkit-inner-spin-button {
 input[type="number"] {
     -moz-appearance: textfield; 
 }
-/* ------------------------------------------- */
 
-/* 시작하기 큰 버튼 */
 .main-btn {
     width: 100%;
     padding: 18px 0; 
@@ -148,7 +167,7 @@ input[type="number"] {
     background-color: var(--btn-blue);
     color: rgb(255, 255, 255);
     transition: all 0.2s ease;
-    box-shadow: 0 6px 15px rgba(54, 92, 109, 0.25); /* 버튼 그림자도 맞춰서 조정 */
+    box-shadow: 0 6px 15px rgba(54, 92, 109, 0.25); 
 }
 
 .main-btn:active {
@@ -156,7 +175,6 @@ input[type="number"] {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
-/* 원형 타이머 디자인 */
 .timer-display {
     margin: 1.5rem auto;
     padding: 1rem;
@@ -168,7 +186,6 @@ input[type="number"] {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    /* 타이머 원 그림자 강화 */
     box-shadow: inset 0 3px 8px rgba(0,0,0,0.08), 0 6px 15px rgba(0,0,0,0.05); 
     transition: background-color 0.8s ease-out; 
     box-sizing: border-box;
@@ -223,7 +240,7 @@ input[type="number"] {
 #stop-btn:active { transform: translateY(1px); }
 
 #back-btn {
-    background-color: #ffffff; /* 돌아가기 버튼도 눈에 띄게 하얀색으로 */
+    background-color: #ffffff; 
     color: #555;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 }

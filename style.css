@@ -247,7 +247,10 @@ input[type="number"] {
 
 /* --- 타이머 화면 --- */
 .timer-display {
-    margin: auto; /* 타이머를 화면 정중앙에 배치 */
+    margin-top: auto; /* 타이머 위쪽 여백은 자동으로 둬서 중앙쯤에 오게 하고 */
+    margin-bottom: 1rem;
+    margin-left: auto; /* 타이머 위쪽 여백은 자동으로 둬서 중앙쯤에 오게 하고 */
+    margin-right: auto;
     padding: 1rem;
     border-radius: 50%;
     background-color: #f8fafc; 

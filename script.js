@@ -17,7 +17,7 @@ const timerScreen = document.getElementById('timer-screen');
 
 // 버튼
 const goToTimerBtn = document.getElementById('go-to-timer-btn');
-const toggleBtn = document.getElementById('stop-btn'); // 정지/시작 토글 버튼으로 사용
+const toggleBtn = document.getElementById('stop-btn'); 
 const backBtn = document.getElementById('back-btn');
 
 // --- 드래그 앤 드롭 초기화 (SortableJS) ---
@@ -28,11 +28,11 @@ new Sortable(phaseList, {
     ghostClass: 'sortable-ghost'
 });
 
-// --- 🚀 프리셋 데이터 및 로직 ---
+// --- 🚀 프리셋 데이터 및 로직 완벽 수정 ---
 const presetData = {
     '478': {
         name: '4-7-8 호흡법',
-        order: ['inhale', 'hold', 'exhale'], // 들숨(4) -> 정지(7) -> 날숨(8)
+        order: ['inhale', 'hold', 'exhale'], // 들숨 -> 정지 -> 날숨 순서
         times: {
             inhale: 4,
             hold: 7,
@@ -43,43 +43,45 @@ const presetData = {
 
 const presetBtn = document.getElementById('preset-btn');
 const presetModal = document.getElementById('preset-modal');
-const closeModalBtn = document.getElementById('close-modal-btn');
-const presetItems = document.querySelectorAll('.preset-item');
 
-// 모달창 열기/닫기
-presetBtn.addEventListener('click', () => presetModal.classList.add('active'));
-closeModalBtn.addEventListener('click', () => presetModal.classList.remove('active'));
-
-// 모달창 바깥 검은 배경 클릭 시 닫히게 처리 (사용성)
-presetModal.addEventListener('click', (e) => {
-    if (e.target === presetModal) presetModal.classList.remove('active');
+// 모달창 열기
+presetBtn.addEventListener('click', () => {
+    presetModal.classList.add('active');
 });
 
-// 프리셋 적용 로직
-presetItems.forEach(btn => {
-    btn.addEventListener('click', () => {
+// 💡 이벤트 위임: 모달창 전체에 클릭 이벤트를 걸어서 오류 방지
+presetModal.addEventListener('click', (e) => {
+    
+    // 1. 만약 클릭한 것이 프리셋 버튼이라면
+    const btn = e.target.closest('.preset-item');
+    if (btn) {
         const presetId = btn.dataset.preset;
         const preset = presetData[presetId];
         
-        // 확인창 띄우기
-        if (confirm(`'${preset.name}' 프리셋을 적용하시겠습니까?`)) {
-            // 1. 시간 값 변경
+        if (preset && confirm(`'${preset.name}' 프리셋을 적용하시겠습니까?`)) {
+            // 시간 변경
             document.getElementById('inhale-time').value = preset.times.inhale;
             document.getElementById('hold-time').value = preset.times.hold;
             document.getElementById('exhale-time').value = preset.times.exhale;
 
-            // 2. 화면의 박스 순서 재배치 (DOM 조작)
+            // 순서 강제 재배치 (DOM)
             preset.order.forEach(phaseKey => {
                 const targetItem = phaseList.querySelector(`[data-phase="${phaseKey}"]`);
                 if (targetItem) {
-                    phaseList.appendChild(targetItem); // 해당 항목을 맨 뒤로 보내며 순서 정렬
+                    phaseList.appendChild(targetItem);
                 }
             });
 
-            // 적용 후 모달 닫기
+            // 모달창 닫기
             presetModal.classList.remove('active');
         }
-    });
+        return; // 프리셋 적용 후 함수 종료
+    }
+
+    // 2. 만약 클릭한 것이 '닫기' 버튼이거나 검은 배경화면이라면 모달 닫기
+    if (e.target.id === 'close-modal-btn' || e.target === presetModal) {
+        presetModal.classList.remove('active');
+    }
 });
 // ---------------------------------
 
@@ -91,12 +93,11 @@ let timeLeft = 0;
 let currentRep = 1;
 let currentSet = 1;
 
-let isRunning = false;        // 타이머가 흘러가고 있는지 여부
-let isPaused = false;         // 일시정지 상태인지 여부
-let isCountdownPhase = false; // 3,2,1 준비 카운트다운 중인지 여부
+let isRunning = false;        
+let isPaused = false;         
+let isCountdownPhase = false; 
 let countdownValue = 3;
 
-// 순서를 담을 배열
 let currentOrder = []; 
 let currentPhaseIndex = 0; 
 
@@ -291,7 +292,6 @@ goToTimerBtn.addEventListener('click', () => {
 // 정지 <-> 시작 토글 버튼 로직
 toggleBtn.addEventListener('click', () => {
     if (isRunning) {
-        // 1. 현재 실행 중일 때 -> 일시정지 처리
         clearInterval(timer);
         clearInterval(countdownTimerInterval);
         isRunning = false;
@@ -301,16 +301,14 @@ toggleBtn.addEventListener('click', () => {
         phaseText.textContent = '일시정지';
     } 
     else if (isPaused) {
-        // 2. 일시정지 상태일 때 -> 이어서 시작 처리
         isRunning = true;
         isPaused = false;
         
         toggleBtn.textContent = '정지';
         
         if (isCountdownPhase) {
-            resumeCountdown(); // 3,2,1 카운트다운 도중에 멈췄었다면 카운트다운 이어서
+            resumeCountdown(); 
         } else {
-            // 본 호흡 도중에 멈췄었다면 텍스트 복구 후 타이머 이어서
             if (currentOrder[currentPhaseIndex] === 'exhale') phaseText.textContent = '내쉬기 (입)';
             else if (currentOrder[currentPhaseIndex] === 'hold') phaseText.textContent = '숨 참기';
             else if (currentOrder[currentPhaseIndex] === 'inhale') phaseText.textContent = '들이마시기 (코)';

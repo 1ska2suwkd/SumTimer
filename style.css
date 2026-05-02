@@ -35,7 +35,6 @@ body {
     max-width: 420px; 
     box-sizing: border-box; 
     overflow: hidden; 
-    position: relative; /* 🚀 프리셋 버튼을 우측 상단에 고정하기 위한 기준점 */
 }
 
 h1 {
@@ -63,7 +62,40 @@ h1 {
     transform: translateY(0); 
 }
 
-/* --- 📱 분리된 설정 박스 스타일 --- */
+/* --- 🚀 프리셋 헤더 (타이틀과 박스 사이) --- */
+.preset-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.8rem;
+    padding: 0 5px;
+}
+
+.section-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #666;
+}
+
+.preset-btn {
+    background-color: #f1f8ff;
+    color: var(--title-blue);
+    border: 1px solid #d6eeff;
+    padding: 6px 12px;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
+    transition: all 0.2s ease;
+}
+
+.preset-btn:active {
+    transform: translateY(2px);
+    background-color: #e0f2fe;
+}
+/* ------------------------------------- */
+
 .settings-group {
     margin-bottom: 1.2rem; 
     background: #ffffff; 
@@ -253,29 +285,7 @@ input[type="number"] {
     #time-left { font-size: 3.5rem; }
 }
 
-/* --- 🚀 추가된 프리셋 관련 스타일 --- */
-.preset-btn {
-    position: absolute;
-    top: 1.2rem;
-    right: 1.2rem;
-    background-color: #f1f8ff;
-    color: var(--title-blue);
-    border: 1px solid #d6eeff;
-    padding: 8px 14px;
-    border-radius: 12px;
-    font-size: 0.9rem;
-    font-weight: 700;
-    cursor: pointer;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
-    transition: all 0.2s ease;
-    z-index: 10;
-}
-
-.preset-btn:active {
-    transform: translateY(2px);
-    background-color: #e0f2fe;
-}
-
+/* --- 모달창 디자인 --- */
 .modal {
     display: none; 
     position: fixed;

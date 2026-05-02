@@ -20,7 +20,7 @@ const goToTimerBtn = document.getElementById('go-to-timer-btn');
 const toggleBtn = document.getElementById('stop-btn'); 
 const backBtn = document.getElementById('back-btn');
 
-// --- 드래그 앤 드롭 초기화 (SortableJS) ---
+// --- 드래그 앤 드롭 초기화 ---
 const phaseList = document.getElementById('phase-list');
 new Sortable(phaseList, {
     handle: '.drag-handle', 
@@ -28,24 +28,15 @@ new Sortable(phaseList, {
     ghostClass: 'sortable-ghost'
 });
 
-// --- 🚀 프리셋 데이터 및 로직 완벽 수정 ---
+// --- 프리셋 데이터 및 로직 ---
 const presetData = {
     '478': {
         name: '4-7-8 호흡법',
-        order: ['inhale', 'hold', 'exhale'], // 들숨 -> 정지 -> 날숨 순서
+        order: ['inhale', 'hold', 'exhale'], 
         times: {
             inhale: 4,
             hold: 7,
             exhale: 8
-        }
-    },
-    '1025': {
-        name: '10-2-5 호흡법',
-        order: ['exhale', 'hold', 'inhale'], // 들숨 -> 정지 -> 날숨 순서
-        times: {
-            exhale: 10,
-            hold: 2,
-            inhale: 5
         }
     }
 };
@@ -53,27 +44,21 @@ const presetData = {
 const presetBtn = document.getElementById('preset-btn');
 const presetModal = document.getElementById('preset-modal');
 
-// 모달창 열기
 presetBtn.addEventListener('click', () => {
     presetModal.classList.add('active');
 });
 
-// 💡 이벤트 위임: 모달창 전체에 클릭 이벤트를 걸어서 오류 방지
 presetModal.addEventListener('click', (e) => {
-    
-    // 1. 만약 클릭한 것이 프리셋 버튼이라면
     const btn = e.target.closest('.preset-item');
     if (btn) {
         const presetId = btn.dataset.preset;
         const preset = presetData[presetId];
         
         if (preset && confirm(`'${preset.name}' 프리셋을 적용하시겠습니까?`)) {
-            // 시간 변경
             document.getElementById('inhale-time').value = preset.times.inhale;
             document.getElementById('hold-time').value = preset.times.hold;
             document.getElementById('exhale-time').value = preset.times.exhale;
 
-            // 순서 강제 재배치 (DOM)
             preset.order.forEach(phaseKey => {
                 const targetItem = phaseList.querySelector(`[data-phase="${phaseKey}"]`);
                 if (targetItem) {
@@ -81,18 +66,15 @@ presetModal.addEventListener('click', (e) => {
                 }
             });
 
-            // 모달창 닫기
             presetModal.classList.remove('active');
         }
-        return; // 프리셋 적용 후 함수 종료
+        return; 
     }
 
-    // 2. 만약 클릭한 것이 '닫기' 버튼이거나 검은 배경화면이라면 모달 닫기
     if (e.target.id === 'close-modal-btn' || e.target === presetModal) {
         presetModal.classList.remove('active');
     }
 });
-// ---------------------------------
 
 // --- 상태 관리 변수 ---
 let timer;
@@ -110,9 +92,24 @@ let countdownValue = 3;
 let currentOrder = []; 
 let currentPhaseIndex = 0; 
 
-// 🔊 알림음 생성 함수
+// 🚀 iOS 사운드 버그 해결: 전역 오디오 컨텍스트 하나만 생성
+let audioCtx;
+
+function initAudio() {
+    // 오디오 컨텍스트가 없으면 만들고
+    if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    // iOS 정책에 의해 일시정지(suspended) 상태라면, 사용자 터치 시점에 깨워줌(resume)
+    if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+    }
+}
+
+// 🔊 알림음 생성 함수 (매번 생성하지 않고 만들어진 오디오 엔진 사용)
 function playBeep(frequency, type = 'sine', duration = 0.3) {
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (!audioCtx) return; // 오디오 엔진이 아직 켜지지 않았다면 무시
+
     const oscillator = audioCtx.createOscillator();
     const gainNode = audioCtx.createGain();
 
@@ -129,7 +126,6 @@ function playBeep(frequency, type = 'sine', duration = 0.3) {
     oscillator.stop(audioCtx.currentTime + duration);
 }
 
-// 화면 텍스트 업데이트
 function updateUI() {
     timeLeftDisplay.textContent = timeLeft;
     currentRepDisplay.textContent = currentRep;
@@ -138,7 +134,6 @@ function updateUI() {
     totalSetsDisplay.textContent = setsInput.value;
 }
 
-// 호흡 단계별 UI 변경
 function switchPhase(phaseName) {
     timerCircle.className = 'timer-display ' + phaseName + '-phase';
 
@@ -158,7 +153,6 @@ function switchPhase(phaseName) {
     updateUI();
 }
 
-// 다음 단계로 넘어가기 (세트 및 반복 횟수 계산)
 function nextStep() {
     currentPhaseIndex++; 
     
@@ -177,7 +171,7 @@ function nextStep() {
                 playBeep(880, 'triangle', 0.5); 
                 switchPhase(currentOrder[currentPhaseIndex]); 
             } else {
-                finishTimer(); // 모든 세트 완료
+                finishTimer(); 
             }
         }
     }
@@ -192,7 +186,6 @@ function tick() {
     }
 }
 
-// 화면 전환 함수
 function switchScreen(hideScreen, showScreen) {
     hideScreen.classList.remove('active');
     setTimeout(() => {
@@ -204,16 +197,13 @@ function switchScreen(hideScreen, showScreen) {
     }, 400);
 }
 
-// 사용자가 설정한 호흡 순서 읽어오기
 function fetchCurrentOrder() {
     const items = document.querySelectorAll('#phase-list .draggable-item');
     currentOrder = Array.from(items).map(item => item.dataset.phase);
 }
 
-// --- 타이머 제어 함수 ---
-
 function startCountdown() {
-    if (isRunning || isPaused) return; // 중복 실행 방지
+    if (isRunning || isPaused) return; 
     isRunning = true; 
     isPaused = false;
     isCountdownPhase = true;
@@ -221,7 +211,6 @@ function startCountdown() {
     
     fetchCurrentOrder();
     
-    // 버튼 상태 초기화
     toggleBtn.textContent = '정지';
     toggleBtn.style.pointerEvents = 'auto';
     toggleBtn.style.opacity = '1';
@@ -238,7 +227,6 @@ function startCountdown() {
     resumeCountdown();
 }
 
-// 카운트다운 진행
 function resumeCountdown() {
     phaseText.textContent = '준비';
     countdownTimerInterval = setInterval(() => {
@@ -255,7 +243,6 @@ function resumeCountdown() {
     }, 1000);
 }
 
-// 본 호흡 타이머 시작
 function startTimer() {
     if (isRunning) return;
     currentRep = 1;
@@ -268,7 +255,6 @@ function startTimer() {
     timer = setInterval(tick, 1000);
 }
 
-// 상태 초기화 (내부용)
 function resetTimerState() {
     clearInterval(timer);
     clearInterval(countdownTimerInterval); 
@@ -278,10 +264,9 @@ function resetTimerState() {
     toggleBtn.textContent = '정지';
 }
 
-// 모든 세트가 완전히 끝났을 때
 function finishTimer() {
     resetTimerState();
-    toggleBtn.style.pointerEvents = 'none'; // 완료 후에는 버튼 비활성화
+    toggleBtn.style.pointerEvents = 'none'; 
     toggleBtn.style.opacity = '0.5';
     phaseText.textContent = '완료!';
     timerCircle.className = 'timer-display'; 
@@ -289,17 +274,18 @@ function finishTimer() {
 }
 
 
-// --- 이벤트 리스너 (버튼 클릭) ---
+// --- 이벤트 리스너 (버튼 클릭 시 오디오 엔진 깨우기 추가) ---
 
 goToTimerBtn.addEventListener('click', () => {
+    initAudio(); // 🚀 버튼을 누르는 순간 iOS 오디오 잠금 해제
     switchScreen(setupScreen, timerScreen);
     setTimeout(() => {
         startCountdown();
     }, 500);
 });
 
-// 정지 <-> 시작 토글 버튼 로직
 toggleBtn.addEventListener('click', () => {
+    initAudio(); // 🚀 정지/시작 조작 시에도 엔진 상태 확인
     if (isRunning) {
         clearInterval(timer);
         clearInterval(countdownTimerInterval);
@@ -327,7 +313,6 @@ toggleBtn.addEventListener('click', () => {
     }
 });
 
-// 설정으로 돌아가기 버튼
 backBtn.addEventListener('click', () => {
     resetTimerState();
     phaseText.textContent = '대기';

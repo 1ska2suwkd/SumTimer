@@ -1,6 +1,6 @@
 :root {
     /* 마음이 편해지는 파스텔 색상 정의 */
-    --bg-sky: #e0f2fe; 
+    --bg-sky: #d6eeff; 
     --title-blue: #0284c7; 
     --container-white: rgba(255, 255, 255, 0.95); 
     --btn-blue: #38bdf8;
@@ -31,8 +31,9 @@ body {
 .container {
     background: var(--container-white);
     padding: 2.5rem 1.5rem; 
-    border-radius: 20px; 
-    box-shadow: 0 10px 25px rgba(0,0,0,0.05); 
+    border-radius: 24px; /* 바깥 컨테이너 모서리 조금 더 둥글게 */
+    /* 배경 컨테이너 그림자 대폭 강화 */
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15); 
     text-align: center;
     width: 90%; 
     max-width: 420px; 
@@ -40,12 +41,19 @@ body {
     overflow: hidden; 
 }
 
+/* --- 타이틀 박스 디자인 추가 --- */
 h1 {
     color: var(--title-blue); 
     margin-top: 0;
     margin-bottom: 1.5rem;
-    font-size: 1.8rem;
+    font-size: 1.7rem;
     font-weight: 700;
+    
+    background-color: #ffffff; /* 하얀색 배경 */
+    padding: 1.2rem; /* 내부 여백 */
+    border-radius: 16px; /* 설정 앱처럼 둥근 모서리 */
+    /* 타이틀 박스 그림자 강화 (배경과 분리) */
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08); 
 }
 
 /* --- 화면 전환 애니메이션 --- */
@@ -65,17 +73,18 @@ h1 {
 /* --- 📱 아이폰 설정 앱 스타일 --- */
 .settings {
     margin-bottom: 1.5rem;
-    background: #ffffff; /* 하얀색 배경 */
-    border-radius: 16px; /* 전체 모서리 둥글게 */
+    background: #ffffff; 
+    border-radius: 16px; 
     display: flex;
     flex-direction: column;
-    padding: 0; /* 내부 여백 제거 (셀이 꽉 차도록) */
-    box-shadow: 0 4px 10px rgba(0,0,0,0.04); /* 연한 그림자 */
-    overflow: hidden; /* 자식 요소가 둥근 모서리를 삐져나가지 못하게 함 */
+    padding: 0; 
+    /* 설정 영역 박스 그림자 대폭 강화 (배경과 분리) */
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08); 
+    overflow: hidden; 
 }
 
 .input-group {
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05); /* 셀 사이의 얇은 구분선 */
+    border-bottom: 2px solid rgba(0, 0, 0, 0.03); /* 구분선 굵기를 살짝 줄여 더 세련되게 */
 }
 
 /* 마지막 셀은 밑줄이 없도록 처리 */
@@ -85,15 +94,15 @@ h1 {
 
 .input-group label {
     display: flex;
-    justify-content: space-between; /* 텍스트는 왼쪽, 입력칸은 오른쪽으로 밀어냄 */
+    justify-content: space-between; 
     align-items: center;
     width: 100%;
-    padding: 16px 20px; /* 터치하기 좋게 위아래 여백을 넉넉히 */
+    padding: 16px 20px; 
     font-size: 1.05rem;
     font-weight: 500;
     color: #333;
     box-sizing: border-box;
-    cursor: pointer; /* 글씨를 터치해도 입력칸에 포커스 되도록 함 */
+    cursor: pointer; 
 }
 
 .input-group input {
@@ -101,20 +110,19 @@ h1 {
     height: 40px; 
     padding: 0;
     text-align: center; 
-    border: none; /* 기존 테두리 제거 */
-    border-radius: 8px; /* 입력칸 자체도 약간 둥글게 */
+    border: none; 
+    border-radius: 8px; 
     font-size: 1.25rem; 
     font-weight: 600;
     color: var(--title-blue);
-    background-color: #f1f5f9; /* 연한 회색 배경 */
+    background-color: #f1f8ff; 
     transition: background-color 0.2s, transform 0.1s;
 }
 
-/* 터치했을 때 테두리 대신 배경색이 변하도록 */
 .input-group input:focus {
     outline: none;
-    background-color: #e0f2fe; /* 포커스 시 하늘색 띄게 */
-    transform: scale(1.05); /* 터치 시 살짝 커지는 애니메이션 */
+    background-color: #e0f2fe; 
+    transform: scale(1.05); 
 }
 
 /* 숫자 입력칸의 기본 화살표 숨기기 */
@@ -138,14 +146,14 @@ input[type="number"] {
     border: none;
     border-radius: 12px;
     background-color: var(--btn-blue);
-    color: white;
+    color: rgb(255, 255, 255);
     transition: all 0.2s ease;
-    box-shadow: 0 4px 10px rgba(56, 189, 248, 0.3);
+    box-shadow: 0 6px 15px rgba(54, 92, 109, 0.25); /* 버튼 그림자도 맞춰서 조정 */
 }
 
 .main-btn:active {
     transform: translateY(2px);
-    box-shadow: 0 2px 5px rgba(56, 189, 248, 0.3);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 /* 원형 타이머 디자인 */
@@ -160,7 +168,8 @@ input[type="number"] {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    box-shadow: inset 0 2px 5px rgba(0,0,0,0.05); 
+    /* 타이머 원 그림자 강화 */
+    box-shadow: inset 0 3px 8px rgba(0,0,0,0.08), 0 6px 15px rgba(0,0,0,0.05); 
     transition: background-color 0.8s ease-out; 
     box-sizing: border-box;
 }
@@ -209,19 +218,20 @@ input[type="number"] {
 #stop-btn {
     background-color: var(--btn-blue);
     color: white;
-    box-shadow: 0 4px 6px rgba(56, 189, 248, 0.2);
+    box-shadow: 0 4px 10px rgba(56, 189, 248, 0.3);
 }
 #stop-btn:active { transform: translateY(1px); }
 
 #back-btn {
-    background-color: #f1f5f9; 
-    color: #666;
+    background-color: #ffffff; /* 돌아가기 버튼도 눈에 띄게 하얀색으로 */
+    color: #555;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 }
-#back-btn:active { transform: translateY(1px); background-color: #e2e8f0; }
+#back-btn:active { transform: translateY(1px); background-color: #f1f5f9; }
 
-.exhale-phase { background-color: var(--phase-exhale) !important; box-shadow: 0 0 20px rgba(255, 228, 230, 0.7); }
+.exhale-phase { background-color: var(--phase-exhale) !important; box-shadow: 0 0 25px rgba(255, 228, 230, 0.8); }
 .hold-phase { background-color: var(--phase-hold) !important; }
-.inhale-phase { background-color: var(--phase-inhale) !important; box-shadow: 0 0 20px rgba(202, 240, 248, 0.7); }
+.inhale-phase { background-color: var(--phase-inhale) !important; box-shadow: 0 0 25px rgba(202, 240, 248, 0.8); }
 
 @media (max-width: 350px) {
     .container { padding: 1.5rem 1rem; }

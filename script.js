@@ -41,11 +41,11 @@ const presetData = {
     },
     '1025': {
         name: '10-2-5 호흡법',
-        order: ['inhale', 'hold', 'exhale'], // 들숨 -> 정지 -> 날숨 순서
+        order: ['exhale', 'hold', 'inhale'], // 들숨 -> 정지 -> 날숨 순서
         times: {
-            inhale: 10,
+            exhale: 10,
             hold: 2,
-            exhale: 5
+            inhale: 5
         }
     }
 };
